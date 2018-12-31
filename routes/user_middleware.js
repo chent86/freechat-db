@@ -18,6 +18,19 @@ function parseUrl(url){
 }
 
 function uesr_middleware(router, personal_info) {
+  router.post('/user', async (ctx, next) => {
+    var data = ctx.request.body;
+    if(data != null && data.username != null && data.username.length == 0) {
+      ctx.response.body = "username cannot be empty";
+      ctx.response.status = 400;
+    } else if(data != null && data.password != null && data.password.length == 0) {
+      ctx.response.body = "password cannot be empty";
+      ctx.response.status = 400;
+    } else {
+      await next();
+      ctx.response.body = "OK";
+    }
+  });
   router.get(/\/user/, async (ctx, next) => {
     await next();
     if(Array.isArray(ctx.body))
@@ -28,7 +41,7 @@ function uesr_middleware(router, personal_info) {
   router.put(/\/user/, async (ctx, next) => {
     var data = ctx.request.body;
     if(personal_info.username != data.username) { // 只能更新自己的信息
-      ctx.response.status = 401;
+      ctx.response.status = 405;
     }
     else {
       await next();
@@ -36,17 +49,16 @@ function uesr_middleware(router, personal_info) {
     }
   });
   router.delete(/\/user/, async (ctx, next) => {
-      if(ctx.url == '/user')
-        ctx.response.status = 401;
-      else {
-        var data = parseUrl(ctx.url);
-        if(data == null || data[0].username != personal_info.username) {  // 只能删除自己的账号
-          ctx.response.status = 401;
-        } else {
-          await next();
-          ctx.response.body = "OK";
-        }
+    if(ctx.url == '/user')
+      ctx.response.status = 405;
+    else {
+      var data = parseUrl(ctx.url);
+      if(data == null || data[0].username != personal_info.username) {  // 只能删除自己的账号
+        ctx.response.status = 405;
+      } else {
+        await next();
       }
+    }
   });  
 }
 

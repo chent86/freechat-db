@@ -4,10 +4,14 @@ const cookie = require('cookie');
 function cookie_auth(router, prepare, personal_info) {
   router.all('/*', async (ctx, next) => {
     if(ctx.method == 'POST' && ctx.url == '/user') {
-      // personal_info.username = ctx.request.body.username;
-      // personal_info.password = ctx.request.body.password;
-      await next();
-      ctx.request.body = 'OK';
+      try { // 在外层中间件捕获所有异常
+        await next();
+      } catch (err) {
+        ctx.response.status = err.statusCode || err.status || 500;
+        ctx.response.body = {
+          message: err.message
+        };
+      }
     } else {
       var cookie_set = cookie.parse(ctx.request.header.cookie || '');
       auth = false;
@@ -30,6 +34,7 @@ function cookie_auth(router, prepare, personal_info) {
       if(auth) {
         personal_info.username = correct_data.username;
         personal_info.password = correct_data.password;
+        personal_info.user_id = correct_data.user_id;
         try { // 在外层中间件捕获所有异常
           await next();
         } catch (err) {
