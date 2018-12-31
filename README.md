@@ -1,6 +1,10 @@
 ## freechat api service
 ---
 
+## url
+
+http://119.29.204.118:3000
+
 ## api table
 
 |type| method|path|body|meaning|
