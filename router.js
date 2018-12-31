@@ -1,29 +1,20 @@
 const router = require('koa-router')()
-
 const prepare = require('./lib/prepare');
 const RestQL = require('koa-restql');
 const models = prepare.sequelize.models;
 const restql = new RestQL(models);
+const md5 = require('js-md5');
+const cookie = require('cookie');
 
-function hide_password(ctx) {
-  for(i = 0; i < ctx.body.length; i++)
-    ctx.body[i].dataValues.password = "";
-}
+const password_auth = require('./routes/password_auth');
+const cookie_auth = require('./routes/cookie_auth');
+const user_middleware = require('./routes/user_middleware');
+var personal_info = new Object(); // 记录当前用户信息
 
 function setRoute(app) {
-  router.all('/auth', async (ctx, next) => {
-    ctx.body = 'auth!';
-  })
-  router.all('/*', async (ctx, next) => {
-    auth=true;
-    if(auth) {              // 进入restql前的权限认证
-      await next()          // restql根据url访问数据库，返回结果
-      if(ctx.url === '/user')  //进行返回数据的处理
-        hide_password(ctx);
-    } else {
-      ctx.body = "error";
-    }
-  })
+  password_auth(router, prepare); // 密码认证
+  cookie_auth(router, prepare, personal_info);   // cookie认证
+  user_middleware(router, personal_info);        // 处理返回的user信息
   app.use(router.routes())
   app.use(restql.routes())
 }

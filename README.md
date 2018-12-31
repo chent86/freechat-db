@@ -1,6 +1,21 @@
 ## freechat api service
 ---
 
+## build environment
+```
+node: v8.11.3
+npm: v5.6.0
+```
+
+## build database
+```
+cd database
+docker-compose up -d
+
+connect database in terminal:
+mysql -uroot --protocol=TCP --port=3306 -p
+```
+
 ## url
 
 http://119.29.204.118:3000
