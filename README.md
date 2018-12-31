@@ -32,6 +32,7 @@ http://119.29.204.118:3000
 |user|PUT|/user|{"username":"test",<br>"password":"admin",<br>"avatar":"012301230123"}|更新用户用户信息<br>(除了username不能更改，其余进行替换)|
 |user|DELETE|/user?username=test||删除用户|
 |has_friend|POST|/has_friend|{"from_id":18,<br>"to_id":21}|交友|
+|has_friend|DELETE|/has_friend?from_id=14&to_id=12||绝交|
 |post|POST|/post|{"user_id":18,<br>"text":"first post",<br>"image":"1221212121212"}|发动态|
 |liked|POST|/liked|{"user_id":18,<br>"post_id":3}|点赞|
 
