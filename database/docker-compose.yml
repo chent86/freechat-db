@@ -1,0 +1,9 @@
+version: '2'
+services:
+  db:
+    build: .
+    image: db-image
+    container_name: db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
