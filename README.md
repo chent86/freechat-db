@@ -24,6 +24,7 @@ http://119.29.204.118:3000
 
 |type| method|path|body|meaning|
 |:-:|:-:|:-:|:-:|:-:|
+|auth|POST|/auth|{"username":"test",<br>"password":"admin"}|登录|
 |user|GET|/user||获取user表所有信息(without password)|
 |user|GET|/user?user_id=1||获取指定id的user信息|
 |user|GET|/user?username=ct||获取指定username的user信息|
