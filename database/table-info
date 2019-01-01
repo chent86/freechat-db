@@ -33,3 +33,12 @@ create table liked(user_id int not null,
                 foreign key(post_id) references post(post_id) on delete cascade,
                 primary key(user_id, post_id)
                 )CHARSET=utf8;
+
+create table comment(user_id int not null,
+                post_id int not null,
+                created_at char(20),
+                updated_at char(20),
+                foreign key(user_id) references user(user_id) on delete cascade,
+                foreign key(post_id) references post(post_id) on delete cascade,
+                content varchar(1000)
+                )CHARSET=utf8;

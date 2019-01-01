@@ -36,8 +36,10 @@ http://119.29.204.118:3000
 |post|POST|/post|{"user_id":18,<br>"text":"first post",<br>"image":"1221212121212"}|发动态|
 |post|GET|/post?user_id=3||查看已关注的用户动态|
 |post|DELETE|/post?post_id=1||删除自己的动态|
-|liked|POST|/liked|{"user_id":18,<br>"post_id":3}|点赞(只能赞自己关注的用户))|
+|liked|POST|/liked|{"user_id":18,<br>"post_id":3}|点赞(只能赞自己关注的用户)|
 |liked|DELETE|/liked?user_id=1&post_id=2||取消点赞|
+|comment|POST|/comment|{"user_id":18,<br>"post_id":3,<br>"content":"123"}|评论(只能评论自己关注的用户)|
+|comment|DELETE|/comment?user_id=1&post_id=2||删除评论|
 
 ## table description
 
@@ -83,6 +85,17 @@ liked
 | created_at | char(20) | YES  |     | NULL    |       |
 | updated_at | char(20) | YES  |     | NULL    |       |
 +------------+----------+------+-----+---------+-------+
+
+comment
++------------+---------------+------+-----+---------+-------+
+| Field      | Type          | Null | Key | Default | Extra |
++------------+---------------+------+-----+---------+-------+
+| user_id    | int(11)       | NO   | MUL | NULL    |       |
+| post_id    | int(11)       | NO   | MUL | NULL    |       |
+| created_at | char(20)      | YES  |     | NULL    |       |
+| updated_at | char(20)      | YES  |     | NULL    |       |
+| content    | varchar(1000) | YES  |     | NULL    |       |
++------------+---------------+------+-----+---------+-------+
 ```
 
 ## diagram
