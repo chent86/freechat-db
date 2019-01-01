@@ -24,7 +24,7 @@ http://119.29.204.118:3000
 
 |type| method|path|body|meaning|
 |:-:|:-:|:-:|:-:|:-:|
-|auth|POST|/auth|{"username":"test",<br>"password":"admin"}|登录|
+|auth|POST|/auth|{"username":"test",<br>"password":"admin"}|登录(返回基本信息)|
 |user|GET|/user||获取user表所有信息(without password)|
 |user|GET|/user?user_id=1||获取指定id的user信息|
 |user|GET|/user?username=ct||获取指定username的user信息|
@@ -34,6 +34,8 @@ http://119.29.204.118:3000
 |has_friend|POST|/has_friend|{"from_id":18,<br>"to_id":21}|交友|
 |has_friend|DELETE|/has_friend?from_id=14&to_id=12||绝交|
 |post|POST|/post|{"user_id":18,<br>"text":"first post",<br>"image":"1221212121212"}|发动态|
+|post|GET|/post?user_id=3||查看已关注的用户动态|
+|post|DELETE|/post?post_id=1||删除自己的动态|
 |liked|POST|/liked|{"user_id":18,<br>"post_id":3}|点赞|
 
 ## table description
