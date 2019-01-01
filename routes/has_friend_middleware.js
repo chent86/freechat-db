@@ -15,31 +15,31 @@ function parseUrl(url){
 function has_friend_middleware(router, personal_info) {
   router.post('/has_friend', async (ctx, next) => {
     var data = ctx.request.body;
-    if(data != null && data.from_id != null && data.to_id != null) {
-      if(data.from_id == data.to_id) {
-        ctx.response.status = 400;
-        ctx.response.body = "cannot make friend with yourself";
-      } else {
-        if(personal_info.user_id == data.from_id) {
-          await next();
+    if(data != null) {
+      if(personal_info.user_id == data.from_id) {
+        if(data.from_id == data.to_id) {
+          ctx.response.status = 400;
+          ctx.response.body = "cannot make friend with yourself";
         } else {
-          ctx.response.status = 405;
+          await next();
         }
+      } else {
+        ctx.response.status = 403;
       }
     } else {
       ctx.response.status = 400;
     }
   });
   router.put(/\/has_friend/, async (ctx, next) => {
-    ctx.response.status = 400;
+    ctx.response.status = 405;
   });
   router.delete(/\/has_friend/, async (ctx, next) => {
     if(ctx.url == '/has_friend')
-    ctx.response.status = 405;
+    ctx.response.status = 403;
   else {
     var data = parseUrl(ctx.url);
     if(data == null || data[0].from_id != personal_info.user_id || data.length != 2 || data[1].to_id == null) {  // 只能删除自己的账号
-      ctx.response.status = 405;
+      ctx.response.status = 400;
       console.log('oh');
     } else {
       await next();

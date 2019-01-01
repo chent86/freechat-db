@@ -14,7 +14,12 @@ function password_auth(router, prepare) {
         }
       });
       if(result.length == 1) {
-        ctx.response.body = "OK";
+        var response = {
+          username: result[0].username,
+          user_id: result[0].user_id,
+          avatar: result[0].avatar
+        };
+        ctx.response.body = response;
         var md5_value = md5(data.username+data.password);
         var cookie_value = {
           "username": data.username,
@@ -28,7 +33,10 @@ function password_auth(router, prepare) {
       else
         ctx.response.status = 401;
     }
-  })
+  });
+  router.get('/auth', async (ctx, next) => {
+    ctx.response.status = 405;
+  });
 }
 
 module.exports = password_auth;

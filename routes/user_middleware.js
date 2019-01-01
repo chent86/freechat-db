@@ -41,7 +41,7 @@ function uesr_middleware(router, personal_info) {
   router.put(/\/user/, async (ctx, next) => {
     var data = ctx.request.body;
     if(personal_info.username != data.username) { // 只能更新自己的信息
-      ctx.response.status = 405;
+      ctx.response.status = 403;
     }
     else {
       await next();
@@ -50,11 +50,11 @@ function uesr_middleware(router, personal_info) {
   });
   router.delete(/\/user/, async (ctx, next) => {
     if(ctx.url == '/user')
-      ctx.response.status = 405;
+      ctx.response.status = 403;
     else {
       var data = parseUrl(ctx.url);
       if(data == null || data[0].username != personal_info.username) {  // 只能删除自己的账号
-        ctx.response.status = 405;
+        ctx.response.status = 403;
       } else {
         await next();
       }
