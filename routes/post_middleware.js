@@ -12,6 +12,10 @@ function parseUrl(url){
   return result;
 }
 
+function sort_by_date(a, b) {
+  return a.created_at>b.created_at;
+}
+
 function post_middleware(router, personal_info, prepare) {
   router.post('/post', async (ctx, next) => {
     var data = ctx.request.body;
@@ -26,21 +30,25 @@ function post_middleware(router, personal_info, prepare) {
     }
   });
   router.get(/\/post/, async (ctx, next) => {
-    var data = parseUrl(ctx.url);
-    if(data == null || data[0].user_id == null) {  // 只能查看自己与好友的post
-      ctx.response.status = 400;
-    } else {
-      var search = await prepare.has_friend.findAll({
-        where: {
-          from_id: personal_info.user_id,
-          to_id: data[0].user_id
-        }
-      });
-      if(search.length == 1 || data[0].user_id == personal_info.user_id) {
-        await next();
+    if(ctx.url != '/post/home') {
+      var data = parseUrl(ctx.url);
+      if(data == null || data[0].user_id == null) {  // 只能查看自己与好友的post
+        ctx.response.status = 400;
       } else {
-        ctx.response.status = 403;
+        var search = await prepare.has_friend.findAll({
+          where: {
+            from_id: personal_info.user_id,
+            to_id: data[0].user_id
+          }
+        });
+        if(search.length == 1 || data[0].user_id == personal_info.user_id) {
+          await next();
+        } else {
+          ctx.response.status = 403;
+        }
       }
+    } else {
+      await next();
     }
   });
   router.put(/\/post/, async (ctx, next) => {
@@ -67,7 +75,41 @@ function post_middleware(router, personal_info, prepare) {
         }
       }
     }
-  });  
+  });
+  router.get('/post/home', async (ctx, next) => {
+    var search = await prepare.has_friend.findAll({
+      where: {
+        from_id:personal_info.user_id
+      },
+      attributes: ['to_id']
+    });
+    search.push({"to_id": personal_info.user_id});
+    var post_set = [];
+    for(var i = 0; i < search.length; i++) {
+      var user_post = await prepare.post.findAll({
+        where: {
+          user_id:search[i].to_id
+        }
+      });
+      user_post.forEach(user_post_item=>{
+        post_set.push(user_post_item);
+      });
+    }
+    post_set.sort(sort_by_date);
+    for(var i = 0; i < post_set.length; i++) {
+      var comment_set = await prepare.comment.findAll({
+        where: {
+          post_id:post_set[i].post_id
+        }
+      });
+      post_set[i]["dataValues"]["comment"] = [];
+      comment_set.forEach(element => {
+        post_set[i]["dataValues"]["comment"].push(element["dataValues"]);
+      });
+      post_set[i]["dataValues"]["comment"].sort(sort_by_date)
+    }
+    ctx.response.body= post_set;
+  });
 }
 
 module.exports = post_middleware;
