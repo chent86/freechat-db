@@ -13,8 +13,7 @@ function definePost(sequelize) {
             allowNull: false
         },
         image: {
-            type: Sequelize.STRING(5000),
-            allowNull: false
+            type: Sequelize.STRING(5000)
         }
     },
     {
