@@ -35,6 +35,7 @@ function comment_middleware(router, personal_info, prepare) {
             ctx.response.status = 403;
           } else {
             await next();
+            ctx.response.body["dataValues"]["username"] = personal_info.username; // 返回数据中添加username
           }
         }
       } else {

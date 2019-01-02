@@ -22,6 +22,7 @@ function post_middleware(router, personal_info, prepare) {
     if(data != null) {
       if(data.user_id == personal_info.user_id) {
         await next();
+        ctx.response.body["dataValues"]["username"] = personal_info.username; // 返回数据中添加username
       } else {
         ctx.response.status = 403;
       }
