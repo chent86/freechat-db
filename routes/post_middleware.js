@@ -125,7 +125,7 @@ function post_middleware(router, personal_info, prepare) {
         });
         post_set[i]["dataValues"]["comment"][j]["username"] = user_data.username;
       }
-      post_set[i]["dataValues"]["comment"].sort(sort_by_date)
+      // post_set[i]["dataValues"]["comment"].sort(sort_by_date)
     }
     ctx.response.body= post_set;
   });
