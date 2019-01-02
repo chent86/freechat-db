@@ -58,6 +58,7 @@ function like_middleware(router, personal_info, prepare) {
         ctx.response.status = 403;
       } else {
         await next();
+        ctx.response.body = 'OK';
       }
     }
   });  
