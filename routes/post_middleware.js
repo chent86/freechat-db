@@ -13,7 +13,7 @@ function parseUrl(url){
 }
 
 function sort_by_date(a, b) {
-  return a.created_at>b.created_at;
+  return a.created_at<b.created_at;
 }
 
 function post_middleware(router, personal_info, prepare) {
