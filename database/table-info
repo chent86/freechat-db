@@ -3,7 +3,7 @@ create table user(user_id int not null auto_increment,
                   username char(50) not null,
                   unique key(username),
                   password char(50) not null,
-                  avatar varchar(1000)
+                  avatar MEDIUMBLOB
 )CHARSET=utf8;
 
 create table has_friend(from_id int not null,
@@ -17,8 +17,8 @@ create table has_friend(from_id int not null,
 
 create table post(post_id int not null auto_increment,
                   primary key(post_id),
-                  text varchar(1000),
-                  image varchar(5000),
+                  text TEXT,
+                  image MEDIUMBLOB,
                   created_at char(20),
                   updated_at char(20),
                   user_id int not null,
