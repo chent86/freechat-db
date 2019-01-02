@@ -25,9 +25,18 @@ function cookie_auth(router, personal_info, prepare) {
           });
           if(search.length == 1) {
             var correct_data = search[0].dataValues;
-            var correct_md5_value = md5(correct_data.username+correct_data.password);
-            if(auth_data.md5_value == correct_md5_value)
-              auth = true;
+            var session = await prepare.session.findAll({
+              where: {
+                user_id: correct_data.user_id
+              }
+            });
+            // mysql 慢8h
+            var cookie_time = (new Date().getTime()-new Date(session[0].updated_at).getTime())/1000-28800;
+            if(session.length == 1 && cookie_time < 86400) { // 登录后得到的cookie有效期为一天
+              var correct_md5_value = md5(correct_data.username+correct_data.password+session[0].value);
+              if(auth_data.md5_value == correct_md5_value)
+                auth = true;
+            }
           }
         }
       }

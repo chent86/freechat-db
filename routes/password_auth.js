@@ -20,7 +20,15 @@ function password_auth(router, prepare) {
           avatar: result[0].avatar
         };
         ctx.response.body = response;
-        var md5_value = md5(data.username+data.password);
+        var random_num = Math.floor(Math.random()*1000);
+        await prepare.session.update({
+          value: random_num
+        },{
+          where: {
+            user_id:result[0].user_id
+          }
+        });
+        var md5_value = md5(data.username+data.password+random_num);
         var cookie_value = {
           "username": data.username,
           "md5_value": md5_value 

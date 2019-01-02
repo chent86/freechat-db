@@ -28,6 +28,9 @@ function uesr_middleware(router, personal_info, prepare) {
       ctx.response.status = 400;
     } else {
       await next();
+      await prepare.session.create({ // 创建session
+        user_id:ctx.response.body["dataValues"].user_id
+      });
       ctx.response.body = "OK";
     }
   });

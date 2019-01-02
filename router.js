@@ -13,6 +13,7 @@ const has_friend_middleware = require('./routes/has_friend_middleware');
 const post_middleware = require('./routes/post_middleware');
 const like_middleware = require('./routes/like_middleware');
 const comment_middleware = require('./routes/comment_middleware');
+const session_middleware = require('./routes/session_middleware'); // 禁止一切对session的获取
 
 var personal_info = new Object(); // 记录当前用户信息
 
@@ -24,6 +25,7 @@ function setRoute(app) {
   post_middleware(router, personal_info, prepare);
   like_middleware(router, personal_info, prepare);
   comment_middleware(router, personal_info, prepare);
+  session_middleware(router);
   app.use(router.routes())
   app.use(restql.routes())
 }

@@ -98,6 +98,17 @@ comment
 | updated_at | char(20)      | YES  |     | NULL    |       |
 | content    | varchar(1000) | YES  |     | NULL    |       |
 +------------+---------------+------+-----+---------+-------+
+
+session
++------------+----------+------+-----+---------+-------+
+| Field      | Type     | Null | Key | Default | Extra |
++------------+----------+------+-----+---------+-------+
+| user_id    | int(11)  | NO   | PRI | NULL    |       |
+| value      | int(11)  | YES  |     | 0       |       |
+| created_at | char(20) | YES  |     | NULL    |       |
+| updated_at | char(20) | YES  |     | NULL    |       |
++------------+----------+------+-----+---------+-------+
+
 ```
 
 ## diagram
