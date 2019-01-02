@@ -96,14 +96,25 @@ function post_middleware(router, personal_info, prepare) {
         post_set.push(user_post_item); 
       });
     }
-    for(var i = 0; i < post_set.length; i++) { // 往动态添加用户名
-      var user_data = await prepare.user.findOne({
+    for(var i = 0; i < post_set.length; i++) { 
+      var user_data = await prepare.user.findOne({ // 往动态添加用户名
         where: {
           user_id:post_set[i].user_id
         },
         attributes: ['username']
       });
       post_set[i]["dataValues"]["username"] = user_data.username;
+      var like_data = await prepare.liked.findAll({ // 往动态添加是否点赞
+        where: {
+          user_id:personal_info.user_id,
+          post_id:post_set[i]["dataValues"].post_id
+        }
+      });
+      if(like_data.length == 0) {
+        post_set[i]["dataValues"]["like"] = 0;
+      } else {
+        post_set[i]["dataValues"]["like"] = 1;
+      }
     }
     post_set.sort(sort_by_date);
     for(var i = 0; i < post_set.length; i++) {

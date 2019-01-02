@@ -31,7 +31,7 @@ function like_middleware(router, personal_info, prepare) {
               to_id: search_post[0].user_id
             }
           });
-          if(check_friendship.length != 1) { // 不是好友不能点赞
+          if(check_friendship.length != 1 && search_post[0].user_id != personal_info.user_id) { // 不是好友(自己除外)不能点赞
             ctx.response.status = 403;
           } else {
             await next();
