@@ -31,7 +31,7 @@ function post_middleware(router, personal_info, prepare) {
     }
   });
   router.get(/\/post/, async (ctx, next) => {
-    if(ctx.url != '/post/home') {
+    if(ctx.url != '/post/home' && ctx.url != '/post/self') {
       var data = parseUrl(ctx.url);
       if(data == null || data[0].user_id == null) {  // 只能查看自己与好友的post
         ctx.response.status = 400;
@@ -44,6 +44,7 @@ function post_middleware(router, personal_info, prepare) {
         });
         if(search.length == 1 || data[0].user_id == personal_info.user_id) {
           await next();
+
         } else {
           ctx.response.status = 403;
         }
@@ -139,6 +140,56 @@ function post_middleware(router, personal_info, prepare) {
       // post_set[i]["dataValues"]["comment"].sort(sort_by_date)
     }
     ctx.response.body= post_set;
+  });
+  router.get('/post/self', async (ctx, next) => {
+    var post_set = await prepare.post.findAll({ // 获取自己的动态
+      where: {
+        user_id:personal_info.user_id
+      }
+    });
+    for(var i = 0; i < post_set.length; i++) { 
+      var user_data = await prepare.user.findOne({ // 往动态添加用户名
+        where: {
+          user_id:post_set[i].user_id
+        },
+        attributes: ['username']
+      });
+      post_set[i]["dataValues"]["username"] = user_data.username;
+      var like_data = await prepare.liked.findAll({ // 往动态添加是否点赞
+        where: {
+          user_id:personal_info.user_id,
+          post_id:post_set[i]["dataValues"].post_id
+        }
+      });
+      if(like_data.length == 0) {
+        post_set[i]["dataValues"]["like"] = 0;
+      } else {
+        post_set[i]["dataValues"]["like"] = 1;
+      }
+    }
+    post_set.sort(sort_by_date);
+    for(var i = 0; i < post_set.length; i++) {
+      var comment_set = await prepare.comment.findAll({  // 获取每个动态的所有评论
+        where: {
+          post_id:post_set[i].post_id
+        }
+      });
+      post_set[i]["dataValues"]["comment"] = [];
+      comment_set.forEach(element => {
+        post_set[i]["dataValues"]["comment"].push(element["dataValues"]);
+      });
+      for(var j = 0; j < post_set[i]["dataValues"]["comment"].length; j++) {  // 为每条评论添加用户名
+        var user_data = await prepare.user.findOne({
+          where: {
+            user_id:post_set[i]["dataValues"]["comment"][j].user_id
+          },
+          attributes: ['username']
+        });
+        post_set[i]["dataValues"]["comment"][j]["username"] = user_data.username;
+      }
+      // post_set[i]["dataValues"]["comment"].sort(sort_by_date)
+    }
+    ctx.response.body= post_set;    
   });
 }
 
