@@ -40,6 +40,8 @@ http://119.29.204.118:3000
 |liked|DELETE|/liked?user_id=1&post_id=2||取消点赞|
 |comment|POST|/comment|{"user_id":18,<br>"post_id":3,<br>"content":"123"}|评论(只能评论自己关注的用户)|
 |comment|DELETE|/comment?user_id=1&post_id=2||删除评论|
+|综合|GET|/post/home||获取自己以及关注的用户的动态，包括动态的评论和点赞情况|
+|综合|GET|/user/count||获取个人动态数量，个人粉丝数量，关注用户数量，已发送的评论数量|
 
 ## table description
 

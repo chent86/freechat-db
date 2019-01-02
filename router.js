@@ -18,8 +18,8 @@ var personal_info = new Object(); // 记录当前用户信息
 
 function setRoute(app) {
   password_auth(router, prepare); // 密码认证
-  cookie_auth(router, prepare, personal_info);   // cookie认证
-  user_middleware(router, personal_info);        // 处理返回的user信息
+  cookie_auth(router, personal_info, prepare);   // cookie认证
+  user_middleware(router, personal_info, prepare);        // 处理返回的user信息
   has_friend_middleware(router, personal_info);
   post_middleware(router, personal_info, prepare);
   like_middleware(router, personal_info, prepare);

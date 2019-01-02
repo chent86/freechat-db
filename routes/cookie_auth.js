@@ -1,7 +1,7 @@
 const md5 = require('js-md5');
 const cookie = require('cookie');
 
-function cookie_auth(router, prepare, personal_info) {
+function cookie_auth(router, personal_info, prepare) {
   router.all('/*', async (ctx, next) => {
     if(ctx.method == 'POST' && ctx.url == '/user') {
       try { // 在外层中间件捕获所有异常
