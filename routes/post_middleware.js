@@ -77,27 +77,36 @@ function post_middleware(router, personal_info, prepare) {
     }
   });
   router.get('/post/home', async (ctx, next) => {
-    var search = await prepare.has_friend.findAll({
+    var search = await prepare.has_friend.findAll({　// 获取自己和所有好友的id
       where: {
         from_id:personal_info.user_id
       },
       attributes: ['to_id']
     });
-    search.push({"to_id": personal_info.user_id});
+    search.push({"to_id": personal_info.user_id}); 
     var post_set = [];
-    for(var i = 0; i < search.length; i++) {
+    for(var i = 0; i < search.length; i++) {　// 获取自己和所有好友的动态
       var user_post = await prepare.post.findAll({
         where: {
           user_id:search[i].to_id
         }
       });
       user_post.forEach(user_post_item=>{
-        post_set.push(user_post_item);
+        post_set.push(user_post_item); 
       });
+    }
+    for(var i = 0; i < post_set.length; i++) { // 往动态添加用户名
+      var user_data = await prepare.user.findOne({
+        where: {
+          user_id:post_set[i].user_id
+        },
+        attributes: ['username']
+      });
+      post_set[i]["dataValues"]["username"] = user_data.username;
     }
     post_set.sort(sort_by_date);
     for(var i = 0; i < post_set.length; i++) {
-      var comment_set = await prepare.comment.findAll({
+      var comment_set = await prepare.comment.findAll({  // 获取每个动态的所有评论
         where: {
           post_id:post_set[i].post_id
         }
@@ -106,6 +115,15 @@ function post_middleware(router, personal_info, prepare) {
       comment_set.forEach(element => {
         post_set[i]["dataValues"]["comment"].push(element["dataValues"]);
       });
+      for(var j = 0; j < post_set[i]["dataValues"]["comment"].length; j++) {  // 为每条评论添加用户名
+        var user_data = await prepare.user.findOne({
+          where: {
+            user_id:post_set[i]["dataValues"]["comment"][j].user_id
+          },
+          attributes: ['username']
+        });
+        post_set[i]["dataValues"]["comment"][j]["username"] = user_data.username;
+      }
       post_set[i]["dataValues"]["comment"].sort(sort_by_date)
     }
     ctx.response.body= post_set;
