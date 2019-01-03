@@ -17,7 +17,8 @@ function password_auth(router, prepare) {
         var response = {
           username: result[0].username,
           user_id: result[0].user_id,
-          avatar: result[0].avatar
+          avatar: result[0].avatar,
+          cover: result[0].cover
         };
         ctx.response.body = response;
         var random_num = Math.floor(Math.random()*1000);
