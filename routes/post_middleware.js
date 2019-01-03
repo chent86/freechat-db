@@ -23,6 +23,14 @@ function post_middleware(router, personal_info, prepare) {
       if(data.user_id == personal_info.user_id) {
         await next();
         ctx.response.body["dataValues"]["username"] = personal_info.username; // 返回数据中添加username
+        var search = await prepare.post.findAll({
+          where: {
+            post_id: ctx.response.body["dataValues"].post_id
+          },
+          attributes: ['updated_at', 'created_at']
+        });
+        ctx.response.body["dataValues"].updated_at = search[0].updated_at; // 保持返回时间的一致
+        ctx.response.body["dataValues"].created_at = search[0].created_at;
       } else {
         ctx.response.status = 403;
       }
@@ -44,7 +52,6 @@ function post_middleware(router, personal_info, prepare) {
         });
         if(search.length == 1 || data[0].user_id == personal_info.user_id) {
           await next();
-
         } else {
           ctx.response.status = 403;
         }
