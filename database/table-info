@@ -45,7 +45,7 @@ create table comment(user_id int not null,
                 )CHARSET=utf8;
 
 create table session(user_id int not null,
-                value int default 0,
+                value char(50),
                 created_at char(20),
                 updated_at char(20),
                 foreign key(user_id) references user(user_id) on delete cascade,

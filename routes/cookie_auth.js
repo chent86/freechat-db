@@ -15,28 +15,24 @@ function cookie_auth(router, personal_info, prepare) {
     } else {
       var cookie_set = cookie.parse(ctx.request.header.cookie || '');
       auth = false;
+      console.log(cookie_set.freechat);
       if(cookie_set.freechat != undefined) {
-        var auth_data = JSON.parse(cookie_set.freechat);
-        if(auth_data.username != undefined && auth_data.md5_value != undefined) {
-          var search = await prepare.user.findAll({
-            where: {
-              username: auth_data.username
-            }
-          });
-          if(search.length == 1) {
-            var correct_data = search[0].dataValues;
-            var session = await prepare.session.findAll({
+        var session = cookie_set.freechat;
+        var search = await prepare.session.findAll({
+          where: {
+            value: session
+          }
+        });
+        if(search.length == 1) {
+          // 登录后得到的cookie有效期为一天
+          if((new Date().getTime()-new Date(search[0].updated_at).getTime())/1000-28800 < 86400) {
+            var user = await prepare.user.findAll({
               where: {
-                user_id: correct_data.user_id
+                user_id: search[0].user_id
               }
             });
-            // mysql 慢8h
-            var cookie_time = (new Date().getTime()-new Date(session[0].updated_at).getTime())/1000-28800;
-            if(session.length == 1 && cookie_time < 86400) { // 登录后得到的cookie有效期为一天
-              var correct_md5_value = md5(correct_data.username+correct_data.password+session[0].value);
-              if(auth_data.md5_value == correct_md5_value)
-                auth = true;
-            }
+            var correct_data = user[0].dataValues;
+            auth = true;
           }
         }
       }

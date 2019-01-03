@@ -1,6 +1,15 @@
 const md5 = require('js-md5');
 const cookie = require('cookie');
 
+var alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+function create_session() {
+  var result = "";
+  for(var i = 0; i < 32; i++) {
+    result += alphabet[Math.floor(Math.random()*62)];
+  }
+  return result;
+}
+
 function password_auth(router, prepare) {
   router.post('/auth', async (ctx, next) => {
     var data = ctx.request.body;
@@ -21,20 +30,15 @@ function password_auth(router, prepare) {
           cover: result[0].cover
         };
         ctx.response.body = response;
-        var random_num = Math.floor(Math.random()*1000);
+        var new_session = create_session();
         await prepare.session.update({
-          value: random_num
+          value: new_session
         },{
           where: {
             user_id:result[0].user_id
           }
         });
-        var md5_value = md5(data.username+data.password+random_num);
-        var cookie_value = {
-          "username": data.username,
-          "md5_value": md5_value 
-        };
-        ctx.set('Set-Cookie', cookie.serialize('freechat', JSON.stringify(cookie_value), {
+        ctx.set('Set-Cookie', cookie.serialize('freechat', new_session, {
           httpOnly: true,
           maxAge: 60 * 60 * 24, // 1 day
         }));
