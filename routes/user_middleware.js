@@ -96,6 +96,44 @@ function uesr_middleware(router, personal_info, prepare) {
     data["comment_count"] = comment_count.length;
     ctx.response.body = data;    
   });
+
+  router.get('/user/follower', async (ctx, next) => {
+    var follower = await prepare.has_friend.findAll({ // 我的粉丝数量
+      where: {
+        to_id: personal_info.user_id
+      }
+    });
+    for(var i = 0; i < follower.length; i++) {
+      var user = await prepare.user.findAll({
+        where: {
+          user_id: follower[i]["dataValues"].from_id
+        }
+      });
+      follower[i]["dataValues"]["username"] = user[0].username;
+      follower[i]["dataValues"]["user_id"] = user[0].user_id;
+      follower[i]["dataValues"]["avatar"] = user[0].avatar;
+    }
+    ctx.response.body = follower;
+  });
+
+  router.get('/user/following', async (ctx, next) => {
+    var following = await prepare.has_friend.findAll({ // 我的关注数量
+      where: {
+        from_id: personal_info.user_id
+      }
+    });
+    for(var i = 0; i < following.length; i++) {
+      var user = await prepare.user.findAll({
+        where: {
+          user_id: following[i]["dataValues"].to_id
+        }
+      });
+      following[i]["dataValues"]["username"] = user[0].username;
+      following[i]["dataValues"]["user_id"] = user[0].user_id;
+      following[i]["dataValues"]["avatar"] = user[0].avatar;
+    }
+    ctx.response.body = following;
+  });
 }
 
 module.exports = uesr_middleware;

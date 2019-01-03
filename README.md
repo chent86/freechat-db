@@ -28,6 +28,8 @@ http://119.29.204.118:3000
 |user|GET|/user||获取user表所有信息(without password)|
 |user|GET|/user?user_id=1||获取指定id的user信息|
 |user|GET|/user?username%5B%24like%5D=%25ct%25||获取模糊匹配username的user信息|
+|user|GET|/user/follower||获取所有粉丝信息|
+|user|GET|/user/following||获取所有的关注用户|
 |user|POST|/user|{"username":"test",<br>"password":"admin",<br>"avatar":"012301230123"}|新建用户|
 |user|PUT|/user|{"username":"test",<br>"password":"admin",<br>"avatar":"012301230123"}|更新用户用户信息<br>(除了username不能更改，其余进行替换)|
 |user|DELETE|/user?username=test||删除用户|
