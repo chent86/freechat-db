@@ -1,7 +1,4 @@
-## freechat api service
----
-
-## description
+# freechat api service
 
 - Node+Koa2+Mysql
 - 通过cookie+session记录用户的状态。
