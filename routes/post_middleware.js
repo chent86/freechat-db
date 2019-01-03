@@ -98,13 +98,14 @@ function post_middleware(router, personal_info, prepare) {
       });
     }
     for(var i = 0; i < post_set.length; i++) { 
-      var user_data = await prepare.user.findOne({ // 往动态添加用户名
+      var user_data = await prepare.user.findOne({ // 往动态添加用户名和头像
         where: {
           user_id:post_set[i].user_id
         },
-        attributes: ['username']
+        attributes: ['username', 'avatar']
       });
       post_set[i]["dataValues"]["username"] = user_data.username;
+      post_set[i]["dataValues"]["avatar"] = user_data.avatar;
       var like_data = await prepare.liked.findAll({ // 往动态添加是否点赞
         where: {
           user_id:personal_info.user_id,

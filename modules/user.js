@@ -18,6 +18,9 @@ function defineUser(sequelize) {
         },
         avatar: {
             type: Sequelize.STRING(1000)
+        },
+        cover: {
+            type: Sequelize.STRING(1000)
         }
     },
     {
