@@ -4,7 +4,8 @@ create table user(user_id int not null auto_increment,
                   unique key(username),
                   password char(50) not null,
                   avatar MEDIUMTEXT,
-                  cover MEDIUMTEXT
+                  cover MEDIUMTEXT,
+                  index name(username(10), password(10))
 )CHARSET=utf8;
 
 create table has_friend(from_id int not null,
