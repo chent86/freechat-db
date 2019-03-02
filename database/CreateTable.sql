@@ -50,5 +50,6 @@ create table session(user_id int not null,
                 created_at char(20),
                 updated_at char(20),
                 foreign key(user_id) references user(user_id) on delete cascade,
-                primary key(user_id)
-                );
+                primary key(user_id),
+                index using hash(value)
+                ) engine=memory;
